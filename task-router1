@@ -9,7 +9,7 @@ const router =express.router()
 router.get("/task",async (req,res)=>{
     try{
         const task = await Task.find()
-        
+        res.send(task)
     }catch(err){
         console.log(err)
     }
