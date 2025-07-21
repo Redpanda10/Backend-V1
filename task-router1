@@ -9,7 +9,7 @@ const router =express.router()
 router.get("/task",async (req,res)=>{
     try{
         const task = await Task.find()
-        res.send(task)
+        res.json(task)
     }catch(err){
         console.log(err)
     }
@@ -20,9 +20,9 @@ router.post("/task", async(req,res)=>{
         const body= req.body
         const task = new  Task(body)
         const newtask = await task.save()
-        res.send(newtask)
+        res.json(newtask)
     }catch(err){
-        res.send({message:"failed to add task",
+        res.json({message:"failed to add task",
             error: err.message
         })
     }
@@ -42,8 +42,8 @@ router.post("/task", async(req,res)=>{
 router.delete('/:id',async(req,res)=>{
     try{
         const deletedTask = await Task.findByIdAndRemove(req.params.id)
-        if(!deletedTask) res.send('Task not found')
-        res.send('Deleted sucessfully')    
+        if(!deletedTask) res.json('Task not found')
+        res.json('Deleted sucessfully')    
         }catch(err){
             res.send(err)
         }
