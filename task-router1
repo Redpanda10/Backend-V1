@@ -1,9 +1,8 @@
 const express =require('express')
-
 const Task = require('./model/task')
-const { findById } = require('../../backend/models/Task')
 
-const router =express.router()
+
+const router =express.Router()
 
 
 router.get("/task",async (req,res)=>{
@@ -11,14 +10,17 @@ router.get("/task",async (req,res)=>{
         const task = await Task.find()
         res.json(task)
     }catch(err){
-        console.log(err)
+        res.json({
+            message:"Error fetching task",
+            error:err.message
+        })
     }
 })
 
 router.post("/task", async(req,res)=>{
     try{
         const body= req.body
-        const task = new  Task(body)
+        const task = new Task(body)
         const newtask = await task.save()
         res.json(newtask)
     }catch(err){
@@ -28,24 +30,31 @@ router.post("/task", async(req,res)=>{
     }
 })
 
-// router.get('/:id',async(req,res)=>{
-//     try{
-//         const id = req.params.id
-//         const task = await Task.findById(id)
-//         res.send("Deleted Sucessfully")
+router.get('/:id',async(req,res)=>{
+    try{
+        const id = req.params.id
+        if(!id) res.json({message:'Task not found'})
+        const task = await Task.findById(id)
+        res.send("Deleted Sucessfully")
 
-//     }catch(err){
-//         res.send(err)
-//     }
-// })
+    }catch(err){
+        res.json({
+            message:"Task not deleted",
+            error:err.message
+        })
+    }
+})
 
 router.delete('/:id',async(req,res)=>{
     try{
         const deletedTask = await Task.findByIdAndRemove(req.params.id)
-        if(!deletedTask) res.json('Task not found')
+        if(!deletedTask) res.json({message:'Task not found'})
         res.json('Deleted sucessfully')    
         }catch(err){
-            res.send(err)
+            res.json({
+                message:"Task not deleted",
+                error:err.message
+            })
         }
 })
-            module.exports = router;
+module.exports = router;
